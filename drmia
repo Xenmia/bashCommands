@@ -10,10 +10,22 @@ if [[ "$countImages" -gt 0 ]]; then
 	userIn=$(echo $userIn | tr '[:upper:]' '[:lower:]')
 
 	if [[ "$userIn" == "yes" || "$userIn" == "y" ]]; then
+		sudo docker rmi $(sudo docker images -a -q) >/dev/null 2>$HOME/bin/logs/error.log
 
-		allImages=$(sudo docker images -a -q)
-
-		sudo docker rmi $allImages
+		error=$(cat $HOME/bin/logs/error.log)
+		echo > $HOME/bin/logs/error.log
+		
+		if [[ "$error" != "" ]] then
+			read -p "Some docker containers are still created, would you like to close them using drma? (yes/no): " userIn2
+			if [[ "$userIn2" == "yes" || "$userIn2" == "y" ]]; then
+				drma
+				drmia
+			elif [[ "$userIn2" == "no" || "$userIn2" == "n" ]]; then
+				echo "Exiting the script. Return when docker containers are removed."
+			else 
+				echo "Invalid response."
+			fi
+		fi
 	elif [[ "$userIn" == "no" || "$userIn" == "n" ]]; then
 		echo "Stopping the command."
 	else

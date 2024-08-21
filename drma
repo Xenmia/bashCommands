@@ -18,7 +18,7 @@ if [[ "$allContainers" -gt 0 ]]; then
 
 		toCloseContainers=$(sudo docker ps -a -q --filter "status=running" --filter "status=paused")
 		if [[ "$toCloseContainers" != "" ]]; then	
-			sudo docker stop $toCloseContainer
+			sudo docker stop $toCloseContainers
 		fi
 		sudo docker rm $(sudo docker ps -a -q --filter "status=exited")
 
