@@ -1,15 +1,15 @@
 #!/bin/bash
 
 
-allContainers=$(sudo docker ps -a | wc -l)
-allContainers=$(( $allContainers - 1 ))
+allContainers=$(sudo docker ps -a -q | wc -l)
 
 if [[ "$allContainers" -gt 0 ]]; then
 
-	runningContainers=$(sudo docker ps -a --filter "status=running" --filter "status=paused" --format '{{.Name}}')
-
-	echo "Containers \"$runningContainers\" are still running or are paused."
-	read -p "All docker containers will be closed and removed. Do you want to continue? (yes/no):" userIn
+	runningContainers=$(sudo docker ps -a --filter "status=running" --filter "status=paused" --format "{{.Image}}({{.ID}})")
+	if [[ "$runningContainers" != "" ]]; then
+		echo "Containers \"$runningContainers\" are still running or are paused."
+	fi
+	read -p "All docker containers will be closed and removed. Do you want to continue? (yes/no): " userIn
 
 	userIn=$(echo "$userIn" | tr '[:upper:]' '[:lower:]')
 
