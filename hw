@@ -1,2 +1,2 @@
 #!/bin/bash
-history -c; history -w; clear
+#history -c; history -w; clear
