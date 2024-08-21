@@ -1,0 +1,32 @@
+#!/bin/bash
+
+
+allContainers=$(sudo docker ps -a | wc -l)
+allContainers=$(( $allContainers - 1 ))
+
+if [[ "$allContainers" -gt 0 ]]; then
+
+	runningContainers=$(sudo docker ps -a --filter "status=running" --filter "status=paused" --format '{{.Name}}')
+
+	echo "Containers \"$runningContainers\" are still running or are paused."
+	read -p "All docker containers will be closed and removed. Do you want to continue? (yes/no):" userIn
+
+	userIn=$(echo "$userIn" | tr '[:upper:]' '[:lower:]')
+
+	if [[ "$userIn" == "yes" || "$userIn" == "y" ]]; then
+		echo "All running, closed and paused docker containers will be removed!"
+
+		toCloseContainers=$(sudo docker ps -a -q --filter "status=running" --filter "status=paused")
+		if [[ "$toCloseContainers" != "" ]]; then	
+			sudo docker stop $toCloseContainer
+		fi
+		sudo docker rm $(sudo docker ps -a -q --filter "status=exited")
+
+	elif [[ "$userIn" == "no" || "$userIn" == "n" ]]; then
+		echo "The command is stopped."
+	else
+		echo "Invalid input. Please enter 'yes' or 'no'."
+	fi
+else 
+	echo "There are no containers."
+fi

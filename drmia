@@ -1,0 +1,25 @@
+#!/bin/bash
+
+countImages=$(sudo docker images -a -q | wc -l)
+
+
+
+if [[ "$countImages" -gt 0 ]]; then
+	read -p "All images will be removed. Do you want to continue? (yes/no): " userIn
+	
+	userIn=$(echo $userIn | tr '[:upper:]' '[:lower:]')
+
+	if [[ "$userIn" == "yes" || "$userIn" == "y" ]]; then
+
+		allImages=$(sudo docker images -a -q)
+
+		sudo docker rmi $allImages
+	elif [[ "$userIn" == "no" || "$userIn" == "n" ]]; then
+		echo "Stopping the command."
+	else
+		echo "Not a valid response. Please enter a valid response (yes/no)."
+	fi
+else
+	echo "There are no created docker images."
+fi
+
